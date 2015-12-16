@@ -1,5 +1,6 @@
 package com.github.kirivasile.etsp;
 
+import java.awt.*;
 import java.io.FileReader;
 import java.util.Scanner;
 
@@ -13,38 +14,30 @@ public class Main {
         Scanner in = new Scanner(new FileReader("test.txt"));
         int vertexCount = in.nextInt();
         float[][] matrix = new float[vertexCount][vertexCount];
-        for(int i = 0; i < vertexCount; ++i){
+        /*for(int i = 0; i < vertexCount; ++i){
             for(int j = 0; j < vertexCount; ++j){
                 matrix[i][j] = (float)in.nextDouble();
             }
+        }*/
+        Vertex[] vertexes = new Vertex[vertexCount];
+        for (int i = 0; i < vertexCount; ++i) {
+            vertexes[i] = new Vertex();
+            vertexes[i].setX(in.nextFloat());
+            vertexes[i].setY(in.nextFloat());
+        }
+        for (int i = 0; i < vertexCount; ++i) {
+            for (int j = 0; j < vertexCount; ++j) {
+                float dx = Math.abs(vertexes[i].getX() - vertexes[j].getX());
+                float dy = Math.abs(vertexes[i].getY() - vertexes[j].getY());
+                matrix[i][j] = (float)Math.sqrt(dx * dx + dy * dy);
+            }
         }
         in.close();
-        /*float[][] matrix = new float[5][5];
-        matrix[0][1] = 4;
-        matrix[0][2] = 5.6f;
-        matrix[0][3] = 6.3f;
-        matrix[0][4] = 4;
-        matrix[1][0] = 4;
-        matrix[1][2] = 4;
-        matrix[1][3] = 6.3f;
-        matrix[1][4] = 5.6f;
-        matrix[2][0] = 5.6f;
-        matrix[2][1] = 4;
-        matrix[2][3] = 2.8f;
-        matrix[2][4] = 4;
-        matrix[3][0] = 6.3f;
-        matrix[3][1] = 6.3f;
-        matrix[3][2] = 2.8f;
-        matrix[3][4] = 2.8f;
-        matrix[4][0] = 4;
-        matrix[4][1] = 5.6f;
-        matrix[4][2] = 4;
-        matrix[4][3] = 2.8f;*/
         GeneticSolver gs = new GeneticSolver(matrix);
-        gs.setSelectionPercent(0.3f);
+        gs.setSelectionPercent(0.5f);
         gs.setMutationPercent(0.1f);
-        gs.setGenerationCount(50);
-        gs.setPopulationSize(100);
+        gs.setGenerationCount(500);
+        gs.setPopulationSize(1000);
         Path result = gs.handle();
         int[] arr = result.getPath();
         float value = result.getValue();
@@ -54,5 +47,34 @@ public class Main {
             System.out.print(arr[i] + " ");
         }
         System.out.println();
+    }
+
+    public static class Vertex {
+        float x;
+        float y;
+
+        public Vertex() {
+        }
+
+        public Vertex(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public float getX() {
+            return x;
+        }
+
+        public void setX(float x) {
+            this.x = x;
+        }
+
+        public float getY() {
+            return y;
+        }
+
+        public void setY(float y) {
+            this.y = y;
+        }
     }
 }
